@@ -4,6 +4,8 @@ from requests.auth import HTTPBasicAuth
 import zipfile
 import base64
 from pathlib import Path
+import os
+
 
 
 def generate_password_dict():
@@ -41,23 +43,46 @@ def brute_force_authenticate():
     return None
 
 
+
+
+EXCLUDED_DIRS = {"node_modules", ".expo", ".next", "__pycache__"}
+
 def create_zip(temp_url):
+    zip_filename = "submission.zip"
+    included_items = [
+        "cvfrontend",
+        "cvsubmission",
+        "cvsubmission-app",
+        "cv.pdf",
+        "README.md",
+    ]
+
     try:
-        files_to_zip = ['dict.txt', 'cv.pdf', 'submissions/utils.py']
-        zip_filename = 'submission.zip'
-
-        with zipfile.ZipFile(zip_filename, 'w') as zipf:
-            for file in files_to_zip:
-                zipf.write(file)
-
-        with open(zip_filename, 'rb') as file:
-            encoded_zip = base64.b64encode(file.read()).decode()
+        with zipfile.ZipFile(zip_filename, "w", zipfile.ZIP_DEFLATED) as zipf:
+            for item in included_items:
+                if os.path.isdir(item):
+                    for root, dirs, files in os.walk(item):
+                        # Filter out excluded directories
+                        dirs[:] = [d for d in dirs if d not in EXCLUDED_DIRS]
+                        for file in files:
+                            file_path = os.path.join(root, file)
+                            arcname = os.path.relpath(file_path)
+                            zipf.write(file_path, arcname)
+                            print(f"📦 Zipped: {arcname}")
+                elif os.path.isfile(item):
+                    zipf.write(item, os.path.basename(item))
+                    print(f"📄 Zipped: {item}")
+        
+        # Encode zip to base64
+        with open(zip_filename, "rb") as f:
+            encoded_zip = base64.b64encode(f.read()).decode("utf-8")
 
         return submit_cv(encoded_zip, temp_url)
 
     except Exception as e:
         print("❌ ZIP Creation Error:", e)
         return False
+
 
 
 def submit_cv(encoded_zip, temp_url):
