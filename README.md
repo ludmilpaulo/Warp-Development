@@ -50,4 +50,72 @@ The technical test required:
 ---
 
 ## 📂 Project Structure
+cvfrontend/ # Web frontend (Next.js + Tailwind + RTK)
+cvsubmission/ # Django backend with brute-force and submission logic
+│ └── submissions/ # Backend logic, including utils and views
+cvsubmission-app/ # Expo + React Native app (optional mobile UI)
+cv.pdf # My resume (PDF)
+dict.txt # Generated password permutations (auto-generated)
+
+
+---
+
+## 🔒 Security & Logic Flow
+
+1. **Generate all "password" permutations:**  
+   Uses Python’s `itertools.product()` to create all possible forms, saved to `dict.txt`.
+
+2. **Brute-force API login:**  
+   Attempts each password using Basic Auth until the correct one is found, retrieving the temp upload URL.
+
+3. **Zip all relevant code:**  
+   Folders and files are zipped (excluding heavy or irrelevant directories), maintaining project structure.
+
+4. **Base64 encode ZIP & submit via API:**  
+   The archive is submitted in a JSON POST to the upload URL with my name, surname, and email.
+
+5. **Modern UI/UX:**  
+   - **Next.js web UI:** Attractive TailwindCSS design, loading overlay, status feedback.
+   - **Expo React Native app:** Mobile-optimized, styled with `twrnc`, native ActivityIndicator for loading.
+
+---
+
+## 🧪 How to Run
+
+### Backend (Django)
+```bash
+cd cvsubmission
+python manage.py runserver
+
+### Web Frontend (Next.js)
+cd cvfrontend
+npm install
+npm run dev
+
+Mobile App (Expo)
+cd cvsubmission-app
+npm install
+npx expo start
+
+🌟 Skills Demonstrated
+Secure API automation and Basic Auth brute-forcing (Python)
+
+RESTful Django API, CSRF-exempt views, file and encoding logic
+
+Robust frontend with Next.js, TypeScript, Tailwind, Redux Toolkit
+
+Real-time feedback and animated UI/UX (web and mobile)
+
+Expo/React Native mobile skills with Tailwind-style design
+
+Clean project organization, packaging, and deployment automation
+
+Practical problem-solving and software delivery from backend to UI
+
+📧 Author
+Ludmil Avelino
+Full Stack Software Engineer
+Email: ludmilpaulo@gmail.com
+
+
 
